@@ -28,7 +28,7 @@ brew install xcodegen
 ```
 
 ```bash
-cd lbx && xcodegen generate && open Lbx.xcodeproj
+xcodegen generate && open Lbx.xcodeproj
 ```
 
 To run on a device, select your team under *Signing & Capabilities* (a free
@@ -38,7 +38,7 @@ Developer Mode on the device.
 ### Tests
 
 ```bash
-cd lbx/LbxCore && swift test
+cd LbxCore && swift test
 ```
 
 The `Lbx` scheme in Xcode (`⌘U`) runs these plus the UI tests in `UITests/`,
@@ -119,7 +119,7 @@ On a device, also try real app schemes such as `youtube://`.
 ## Layout
 
 ```
-lbx/
+.
 ├── project.yml            XcodeGen definition (app + LbxCore + tests)
 ├── LbxCore/               UI-independent logic (SwiftPM, unit tested)
 │   └── Sources/LbxCore/

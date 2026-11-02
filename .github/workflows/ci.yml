@@ -1,14 +1,8 @@
-name: lbx
+name: CI
 
 on:
   push:
-    paths:
-      - "lbx/**"
-      - ".github/workflows/lbx.yml"
   pull_request:
-    paths:
-      - "lbx/**"
-      - ".github/workflows/lbx.yml"
   workflow_dispatch:
 
 permissions:
@@ -20,16 +14,13 @@ jobs:
     container: swift:6.0-noble
     defaults:
       run:
-        working-directory: lbx/LbxCore
+        working-directory: LbxCore
     steps:
       - uses: actions/checkout@v4
       - run: swift test
 
   ios-build:
     runs-on: macos-15
-    defaults:
-      run:
-        working-directory: lbx
     steps:
       - uses: actions/checkout@v4
       - name: Show toolchain
@@ -37,7 +28,7 @@ jobs:
           xcodebuild -version
           swift --version
       - name: LbxCore tests (macOS)
-        working-directory: lbx/LbxCore
+        working-directory: LbxCore
         run: swift test
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -71,5 +62,5 @@ jobs:
         with:
           name: TestResults
           path: |
-            lbx/TestResults.xcresult
-            lbx/test.log
+            TestResults.xcresult
+            test.log
