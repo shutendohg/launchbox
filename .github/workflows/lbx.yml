@@ -1,0 +1,52 @@
+name: lbx
+
+on:
+  push:
+    paths:
+      - "lbx/**"
+      - ".github/workflows/lbx.yml"
+  pull_request:
+    paths:
+      - "lbx/**"
+      - ".github/workflows/lbx.yml"
+  workflow_dispatch:
+
+jobs:
+  core-tests-linux:
+    runs-on: ubuntu-24.04
+    container: swift:6.0-noble
+    defaults:
+      run:
+        working-directory: lbx/LbxCore
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift test
+
+  ios-build:
+    runs-on: macos-15
+    defaults:
+      run:
+        working-directory: lbx
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+      - name: LbxCore tests (macOS)
+        working-directory: lbx/LbxCore
+        run: swift test
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Build app for iOS Simulator
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Lbx.xcodeproj \
+            -scheme Lbx \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee build.log | grep -E "error:|warning:|BUILD (SUCCEEDED|FAILED)" || true
+          grep -q "BUILD SUCCEEDED" build.log
