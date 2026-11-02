@@ -26,6 +26,15 @@ final class LbxUITests: XCTestCase {
         app.buttons.matching(identifier: identifier).firstMatch
     }
 
+    /// Taps a toolbar item by coordinate. On recent iOS, XCUITest's regular tap
+    /// first asks the toolbar item to scroll itself visible, which fails for
+    /// toolbar menus (kAXErrorCannotComplete) even though the item is on screen.
+    private func tapToolbarItem(_ identifier: String, file: StaticString = #filePath, line: UInt = #line) {
+        let item = button(identifier)
+        XCTAssertTrue(item.waitForExistence(timeout: 10), "\(identifier) should exist", file: file, line: line)
+        item.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+    }
+
     private func waitUntil(
         _ element: XCUIElement,
         isEnabled: Bool,
@@ -61,7 +70,7 @@ final class LbxUITests: XCTestCase {
     }
 
     private func startNewItem(_ menuTitle: String) {
-        button("home.add").tap()
+        tapToolbarItem("home.add")
         let item = app.buttons[menuTitle].firstMatch
         XCTAssertTrue(item.waitForExistence(timeout: 5))
         item.tap()
@@ -79,7 +88,7 @@ final class LbxUITests: XCTestCase {
     func test_promptAction_asksForInputThenOpensSafari() {
         button("tile.Google Search").tap()
         type("swift ui", into: "prompt.field")
-        button("prompt.submit").tap()
+        tapToolbarItem("prompt.submit")
         assertSafariOpens()
     }
 
@@ -89,7 +98,7 @@ final class LbxUITests: XCTestCase {
         startNewItem("New Action")
         type("Broken", into: "editor.name")
         type("zzzz-not-installed://", into: "editor.template")
-        button("editor.save").tap()
+        tapToolbarItem("editor.save")
 
         let tile = button("tile.Broken")
         XCTAssertTrue(tile.waitForExistence(timeout: 5))
@@ -107,7 +116,7 @@ final class LbxUITests: XCTestCase {
         let field = element("prompt.field")
         XCTAssertTrue(field.waitForExistence(timeout: 5))
 
-        button("prompt.cancel").tap()
+        tapToolbarItem("prompt.cancel")
         XCTAssertTrue(field.waitForNonExistence(timeout: 5))
         XCTAssertEqual(app.state, .runningForeground)
 
@@ -124,7 +133,7 @@ final class LbxUITests: XCTestCase {
         child.tap()
 
         type("Launch Center", into: "prompt.field")
-        button("prompt.submit").tap()
+        tapToolbarItem("prompt.submit")
         assertSafariOpens()
     }
 
@@ -132,7 +141,7 @@ final class LbxUITests: XCTestCase {
     func test_newActionCanBeAssignedToNewGroup() {
         startNewItem("New Group")
         type("Work", into: "editor.name")
-        button("editor.save").tap()
+        tapToolbarItem("editor.save")
         XCTAssertTrue(button("tile.Work").waitForExistence(timeout: 5))
 
         startNewItem("New Action")
@@ -142,7 +151,7 @@ final class LbxUITests: XCTestCase {
         let option = app.buttons["Work"].firstMatch
         XCTAssertTrue(option.waitForExistence(timeout: 5))
         option.tap()
-        button("editor.save").tap()
+        tapToolbarItem("editor.save")
 
         XCTAssertFalse(button("tile.Site").waitForExistence(timeout: 2), "Site should not be at the root")
         button("tile.Work").tap()
