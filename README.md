@@ -44,7 +44,7 @@ cd LbxCore && swift test
 The `Lbx` scheme in Xcode (`⌘U`) runs these plus the UI tests in `UITests/`,
 which walk through most of the manual checklist below on a simulator (the app
 is launched with `-ui-testing`, which uses a throwaway in-memory store). CI
-(`.github/workflows/lbx.yml`) runs the LbxCore tests on Linux and macOS and the
+(`.github/workflows/ci.yml`) runs the LbxCore tests on Linux and macOS and the
 full scheme on an iPhone simulator.
 
 ## URL templates
@@ -105,13 +105,16 @@ Shortcuts briefly appears before switching to the target app.
 
 ## Manual test checklist (Simulator)
 
-1. `https://example.com` → Safari opens.
+Items marked *(UI test)* are automated in `UITests/`; percent-encoding is
+covered by the LbxCore unit tests.
+
+1. `https://example.com` → Safari opens. *(UI test)*
 2. `sms:` → Messages compose opens.
 3. `https://www.google.com/search?q={{prompt:Query}}` → the prompt appears;
-   the input is percent-encoded in Safari's URL.
-4. `zzzz-not-installed://` → an error toast appears, no crash.
-5. Cancel a prompt → nothing opens.
-6. Create a group, add an action to it, and run it from the overlay.
+   the input is percent-encoded in Safari's URL. *(UI test)*
+4. `zzzz-not-installed://` → an error toast appears, no crash. *(UI test)*
+5. Cancel a prompt → nothing opens. *(UI test)*
+6. Create a group, add an action to it, and run it from the overlay. *(UI test)*
 7. Reorder in edit mode, relaunch the app → the order is kept.
 
 On a device, also try real app schemes such as `youtube://`.
