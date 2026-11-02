@@ -11,8 +11,7 @@ struct ActionEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
 
-    @Query(filter: #Predicate<LaunchItem> { $0.kindRaw == "group" }, sort: \LaunchItem.sortIndex)
-    private var groups: [LaunchItem]
+    @Query private var groups: [LaunchItem]
 
     @State private var name: String
     @State private var urlTemplate: String
@@ -22,6 +21,8 @@ struct ActionEditorView: View {
 
     init(target: EditorTarget) {
         self.target = target
+        let groupKind = LaunchItem.Kind.group.rawValue
+        _groups = Query(filter: #Predicate<LaunchItem> { $0.kindRaw == groupKind }, sort: \.sortIndex)
         let item = target.item
         let isGroup = target.kind == .group
         _name = State(initialValue: item?.name ?? "")

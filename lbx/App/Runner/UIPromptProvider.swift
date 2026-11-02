@@ -63,6 +63,12 @@ final class UIPromptProvider: PromptProviding {
         finish(with: nil)
     }
 
+    /// Called from the sheet's onDismiss. A dismissal that finishes after a new
+    /// session has started belongs to the old session and must not cancel it.
+    func sheetDidDismiss() {
+        if !isSessionActive { cancel() }
+    }
+
     private func finish(with value: String?) {
         let pending = continuation
         continuation = nil

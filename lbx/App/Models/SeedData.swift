@@ -16,7 +16,7 @@ enum SeedData {
         ignoreSeededFlag: Bool = false
     ) {
         guard ignoreSeededFlag || !defaults.bool(forKey: seededKey) else { return }
-        defer { defaults.set(true, forKey: seededKey) }
+        defer { if !ignoreSeededFlag { defaults.set(true, forKey: seededKey) } }
 
         let existing = (try? context.fetchCount(FetchDescriptor<LaunchItem>())) ?? 0
         guard existing == 0 else { return }

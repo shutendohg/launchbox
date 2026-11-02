@@ -62,7 +62,7 @@ struct HomeGridView: View {
             ActionEditorView(target: target)
         }
         // Swiping the sheet away cancels the run.
-        .sheet(isPresented: $promptProvider.isSessionActive, onDismiss: { promptProvider.cancel() }) {
+        .sheet(isPresented: $promptProvider.isSessionActive, onDismiss: { promptProvider.sheetDidDismiss() }) {
             PromptInputSheet()
         }
         .confirmationDialog(

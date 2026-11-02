@@ -72,5 +72,11 @@ struct TileView: View {
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel(item.isGroup ? "\(item.name), group" : item.name)
+        .accessibilityActions {
+            // The minus button is merged into the combined element; expose it as an action.
+            if isEditing, let onDelete {
+                Button("Delete") { onDelete() }
+            }
+        }
     }
 }

@@ -29,13 +29,13 @@ enum LaunchItemStore {
     }
 
     /// Moves an item to another container, appending it at the end.
+    /// Does not save; the caller saves once after all of its edits.
     static func reparent(_ item: LaunchItem, to newParent: LaunchItem?, context: ModelContext) {
         guard item.parent?.id != newParent?.id else { return }
         let oldParent = item.parent
         item.sortIndex = nextSortIndex(in: newParent, context: context)
         item.parent = newParent
         renumber(siblings(of: oldParent, in: context).filter { $0.id != item.id })
-        save(context)
     }
 
     /// Drag & drop: places `moving` at `target`'s slot. Both must share a container.

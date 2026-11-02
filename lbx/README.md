@@ -41,9 +41,11 @@ Developer Mode on the device.
 cd lbx/LbxCore && swift test
 ```
 
-The same tests run from the `Lbx` scheme in Xcode (`⌘U`). CI
-(`.github/workflows/lbx.yml`) runs them on Linux and macOS and builds the app
-for the iOS Simulator.
+The `Lbx` scheme in Xcode (`⌘U`) runs these plus the UI tests in `UITests/`,
+which walk through most of the manual checklist below on a simulator (the app
+is launched with `-ui-testing`, which uses a throwaway in-memory store). CI
+(`.github/workflows/lbx.yml`) runs the LbxCore tests on Linux and macOS and the
+full scheme on an iPhone simulator.
 
 ## URL templates
 
@@ -124,6 +126,7 @@ lbx/
 │       ├── Template/      TemplateToken, TemplateParser, TemplateResolver, TemplateLinter
 │       ├── LaunchURLBuilder.swift
 │       ├── ActionPreset.swift, HexColor.swift, Reordering.swift
+├── UITests/               XCUITest end-to-end checks
 └── App/
     ├── LbxApp.swift
     ├── Models/            LaunchItem (SwiftData), LaunchItemStore, SeedData
