@@ -128,6 +128,9 @@ struct ActionEditorView: View {
             if let issue, !trimmedTemplate.isEmpty {
                 Label(issue.message, systemImage: "exclamationmark.circle.fill")
                     .foregroundStyle(.red)
+                    // One element that reads the message, not the icon's symbol name.
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(issue.message)
                     .accessibilityIdentifier("editor.issue")
             } else {
                 Text("Values are percent-encoded unless you add |raw, e.g. {{clipboard|raw}}.")
