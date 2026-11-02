@@ -17,8 +17,9 @@ final class UIPromptProvider: PromptProviding {
         let total: Int
     }
 
-    /// True while the prompt sheet should be on screen.
-    private(set) var isSessionActive = false
+    /// True while the prompt sheet should be on screen. Settable so the sheet
+    /// can bind to it; dismissing the sheet must also call `cancel()`.
+    var isSessionActive = false
     private(set) var sessionTitle = ""
     private(set) var current: Request?
 

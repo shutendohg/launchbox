@@ -15,7 +15,7 @@ struct GroupOverlayView: View {
         ZStack {
             Color.black.opacity(0.35)
                 .ignoresSafeArea()
-                .onTapGesture(perform: onClose)
+                .onTapGesture { onClose() }
                 .accessibilityAddTraits(.isButton)
                 .accessibilityLabel("Close group")
 
@@ -29,7 +29,7 @@ struct GroupOverlayView: View {
                     } description: {
                         Text("Add actions to this group.")
                     } actions: {
-                        Button("Add Action", action: onAdd)
+                        Button("Add Action") { onAdd() }
                     }
                     .frame(minHeight: 200)
                 } else {
@@ -55,11 +55,11 @@ struct GroupOverlayView: View {
                 .lineLimit(1)
             Spacer()
             if isEditing {
-                Button(action: onEditGroup) {
+                Button { onEditGroup() } label: {
                     Image(systemName: "pencil.circle.fill")
                 }
                 .accessibilityLabel("Edit group")
-                Button(action: onAdd) {
+                Button { onAdd() } label: {
                     Image(systemName: "plus.circle.fill")
                 }
                 .accessibilityLabel("Add action to group")

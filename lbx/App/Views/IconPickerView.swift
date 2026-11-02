@@ -36,7 +36,7 @@ struct IconPickerView: View {
                                 .font(.title2)
                                 .frame(width: 52, height: 52)
                                 .background(
-                                    symbol == selection ? Color.accentColor.opacity(0.2) : Color(.secondarySystemBackground),
+                                    symbol == selection ? Color.accentColor.opacity(0.2) : Color(uiColor: .secondarySystemBackground),
                                     in: RoundedRectangle(cornerRadius: 12, style: .continuous)
                                 )
                         }

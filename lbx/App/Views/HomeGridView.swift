@@ -24,8 +24,12 @@ struct HomeGridView: View {
     @State private var editorTarget: EditorTarget?
     @State private var openGroup: LaunchItem?
     @State private var pendingDelete: LaunchItem?
+    @State private var isConfirmingDelete = false
 
     var body: some View {
+        @Bindable var runner = runner
+        @Bindable var promptProvider = promptProvider
+
         NavigationStack {
             ScrollView {
                 if rootItems.isEmpty {
@@ -52,20 +56,18 @@ struct HomeGridView: View {
             }
         }
         .overlay(alignment: .bottom) {
-            ToastView(toast: Binding(
-                get: { runner.toast },
-                set: { runner.toast = $0 }
-            ))
+            ToastView(toast: $runner.toast)
         }
         .sheet(item: $editorTarget) { target in
             ActionEditorView(target: target)
         }
-        .sheet(isPresented: promptSheetBinding, onDismiss: { promptProvider.cancel() }) {
+        // Swiping the sheet away cancels the run.
+        .sheet(isPresented: $promptProvider.isSessionActive, onDismiss: { promptProvider.cancel() }) {
             PromptInputSheet()
         }
         .confirmationDialog(
             deleteTitle,
-            isPresented: Binding(get: { pendingDelete != nil }, set: { if !$0 { pendingDelete = nil } }),
+            isPresented: $isConfirmingDelete,
             titleVisibility: .visible,
             presenting: pendingDelete
         ) { item in
@@ -135,7 +137,10 @@ struct HomeGridView: View {
             duplicate: { item in
                 withAnimation(.snappy) { _ = LaunchItemStore.duplicate(item, context: context) }
             },
-            delete: { item in pendingDelete = item },
+            delete: { item in
+                pendingDelete = item
+                isConfirmingDelete = true
+            },
             move: { moving, target in LaunchItemStore.move(moving, onto: target, context: context) }
         )
     }
@@ -153,14 +158,5 @@ struct HomeGridView: View {
 
     private func closeGroup() {
         withAnimation(.snappy) { openGroup = nil }
-    }
-
-    private var promptSheetBinding: Binding<Bool> {
-        Binding(
-            get: { promptProvider.isSessionActive },
-            set: { isPresented in
-                if !isPresented { promptProvider.cancel() }
-            }
-        )
     }
 }

@@ -51,7 +51,7 @@ struct TileView: View {
             IconTile(symbol: item.iconSymbol, colorHex: item.colorHex, isGroup: item.isGroup)
                 .overlay(alignment: .topLeading) {
                     if isEditing, let onDelete {
-                        Button(action: onDelete) {
+                        Button { onDelete() } label: {
                             Image(systemName: "minus.circle.fill")
                                 .font(.title3)
                                 .symbolRenderingMode(.palette)
