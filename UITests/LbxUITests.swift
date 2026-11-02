@@ -11,13 +11,31 @@ final class LbxUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing"]
         app.launch()
-        XCTAssertTrue(element("tile.Google Search").waitForExistence(timeout: 15), "Seeded actions should appear")
+        XCTAssertTrue(button("tile.Google Search").waitForExistence(timeout: 15), "Seeded actions should appear")
     }
 
     // MARK: - Helpers
 
+    /// Any element with this identifier. Prefer `button(_:)` for buttons: an
+    /// untyped query can match a wrapper (e.g. a toolbar item) instead.
     private func element(_ identifier: String) -> XCUIElement {
         app.descendants(matching: .any).matching(identifier: identifier).firstMatch
+    }
+
+    private func button(_ identifier: String) -> XCUIElement {
+        app.buttons.matching(identifier: identifier).firstMatch
+    }
+
+    private func waitUntil(
+        _ element: XCUIElement,
+        isEnabled: Bool,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let predicate = NSPredicate(format: "exists == true AND isEnabled == %@", NSNumber(value: isEnabled))
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: element)
+        let result = XCTWaiter().wait(for: [expectation], timeout: 5)
+        XCTAssertEqual(result, .completed, "Expected isEnabled == \(isEnabled)", file: file, line: line)
     }
 
     private func assertSafariOpens(file: StaticString = #filePath, line: UInt = #line) {
@@ -29,7 +47,7 @@ final class LbxUITests: XCTestCase {
         app.activate()
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 15), "lbx should come back", file: file, line: line)
         XCTAssertTrue(
-            element("tile.Google Search").waitForExistence(timeout: 10),
+            button("tile.Google Search").waitForExistence(timeout: 10),
             "The grid should be usable after returning",
             file: file, line: line
         )
@@ -43,7 +61,7 @@ final class LbxUITests: XCTestCase {
     }
 
     private func startNewItem(_ menuTitle: String) {
-        element("home.add").tap()
+        button("home.add").tap()
         let item = app.buttons[menuTitle].firstMatch
         XCTAssertTrue(item.waitForExistence(timeout: 5))
         item.tap()
@@ -53,15 +71,15 @@ final class LbxUITests: XCTestCase {
 
     /// Checklist 1: a static https URL opens Safari.
     func test_staticURLAction_opensSafari() {
-        element("tile.Example").tap()
+        button("tile.Example").tap()
         assertSafariOpens()
     }
 
     /// Checklist 3: a prompt is shown and the URL opens after input.
     func test_promptAction_asksForInputThenOpensSafari() {
-        element("tile.Google Search").tap()
+        button("tile.Google Search").tap()
         type("swift ui", into: "prompt.field")
-        element("prompt.submit").tap()
+        button("prompt.submit").tap()
         assertSafariOpens()
     }
 
@@ -71,9 +89,9 @@ final class LbxUITests: XCTestCase {
         startNewItem("New Action")
         type("Broken", into: "editor.name")
         type("zzzz-not-installed://", into: "editor.template")
-        element("editor.save").tap()
+        button("editor.save").tap()
 
-        let tile = element("tile.Broken")
+        let tile = button("tile.Broken")
         XCTAssertTrue(tile.waitForExistence(timeout: 5))
         tile.tap()
 
@@ -85,28 +103,28 @@ final class LbxUITests: XCTestCase {
 
     /// Checklist 5: cancelling a prompt opens nothing, and the runner is usable again.
     func test_cancellingPrompt_opensNothing() {
-        element("tile.Google Search").tap()
+        button("tile.Google Search").tap()
         let field = element("prompt.field")
         XCTAssertTrue(field.waitForExistence(timeout: 5))
 
-        element("prompt.cancel").tap()
+        button("prompt.cancel").tap()
         XCTAssertTrue(field.waitForNonExistence(timeout: 5))
         XCTAssertEqual(app.state, .runningForeground)
 
         // A cancelled run must not leave the runner stuck.
-        element("tile.Google Search").tap()
+        button("tile.Google Search").tap()
         XCTAssertTrue(element("prompt.field").waitForExistence(timeout: 5))
     }
 
     /// Checklist 6: actions inside a group run from the overlay.
     func test_groupOverlay_runsChildActionWithPrompt() {
-        element("tile.Lookup").tap()
-        let child = element("tile.Wikipedia")
+        button("tile.Lookup").tap()
+        let child = button("tile.Wikipedia")
         XCTAssertTrue(child.waitForExistence(timeout: 5))
         child.tap()
 
         type("Launch Center", into: "prompt.field")
-        element("prompt.submit").tap()
+        button("prompt.submit").tap()
         assertSafariOpens()
     }
 
@@ -114,8 +132,8 @@ final class LbxUITests: XCTestCase {
     func test_newActionCanBeAssignedToNewGroup() {
         startNewItem("New Group")
         type("Work", into: "editor.name")
-        element("editor.save").tap()
-        XCTAssertTrue(element("tile.Work").waitForExistence(timeout: 5))
+        button("editor.save").tap()
+        XCTAssertTrue(button("tile.Work").waitForExistence(timeout: 5))
 
         startNewItem("New Action")
         type("Site", into: "editor.name")
@@ -124,11 +142,11 @@ final class LbxUITests: XCTestCase {
         let option = app.buttons["Work"].firstMatch
         XCTAssertTrue(option.waitForExistence(timeout: 5))
         option.tap()
-        element("editor.save").tap()
+        button("editor.save").tap()
 
-        XCTAssertFalse(element("tile.Site").waitForExistence(timeout: 2), "Site should not be at the root")
-        element("tile.Work").tap()
-        XCTAssertTrue(element("tile.Site").waitForExistence(timeout: 5), "Site should be inside Work")
+        XCTAssertFalse(button("tile.Site").waitForExistence(timeout: 2), "Site should not be at the root")
+        button("tile.Work").tap()
+        XCTAssertTrue(button("tile.Site").waitForExistence(timeout: 5), "Site should be inside Work")
     }
 
     /// Save-time validation: malformed templates cannot be saved.
@@ -138,22 +156,29 @@ final class LbxUITests: XCTestCase {
         type("example.com", into: "editor.template")
 
         XCTAssertTrue(element("editor.issue").waitForExistence(timeout: 5))
-        XCTAssertFalse(element("editor.save").isEnabled)
+        waitUntil(button("editor.save"), isEnabled: false)
 
         let template = element("editor.template")
         template.typeText("/{{promt}}")
-        XCTAssertTrue(element("editor.issue").label.contains("promt"), element("editor.issue").label)
-        XCTAssertFalse(element("editor.save").isEnabled)
+        let issue = element("editor.issue")
+        XCTAssertTrue(issue.waitForExistence(timeout: 5))
+        XCTAssertTrue(issue.label.contains("promt"), issue.label)
+        waitUntil(button("editor.save"), isEnabled: false)
+
+        // Fixing the template enables Save.
+        template.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: "example.com/{{promt}}".count))
+        template.typeText("https://example.com")
+        waitUntil(button("editor.save"), isEnabled: true)
     }
 
     /// Context menu: duplicate, then delete with confirmation.
     func test_contextMenu_duplicatesAndDeletes() {
-        element("tile.Example").press(forDuration: 1.2)
+        button("tile.Example").press(forDuration: 1.2)
         let duplicate = app.buttons["Duplicate"].firstMatch
         XCTAssertTrue(duplicate.waitForExistence(timeout: 5))
         duplicate.tap()
 
-        let copy = element("tile.Example Copy")
+        let copy = button("tile.Example Copy")
         XCTAssertTrue(copy.waitForExistence(timeout: 5))
 
         copy.press(forDuration: 1.2)
@@ -167,6 +192,6 @@ final class LbxUITests: XCTestCase {
         confirm.tap()
 
         XCTAssertTrue(copy.waitForNonExistence(timeout: 5))
-        XCTAssertTrue(element("tile.Example").exists)
+        XCTAssertTrue(button("tile.Example").exists)
     }
 }

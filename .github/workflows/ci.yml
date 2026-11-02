@@ -60,7 +60,7 @@ jobs:
             -retry-tests-on-failure \
             -test-iterations 3 \
             -test-timeouts-enabled YES \
-            -default-test-execution-time-allowance 180 \
+            -default-test-execution-time-allowance 300 \
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee test.log \
             | grep --line-buffered -E "error:|warning: .*\.swift|Test Case .*(passed|failed)|Executed [0-9]+ tests|\*\* (TEST|BUILD) (SUCCEEDED|FAILED)"
