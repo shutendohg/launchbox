@@ -23,6 +23,16 @@ final class LbxUITests: XCTestCase {
     private func assertSafariOpens(file: StaticString = #filePath, line: UInt = #line) {
         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         XCTAssertTrue(safari.wait(for: .runningForeground, timeout: 30), "Safari should open", file: file, line: line)
+
+        // Come back to lbx: it must still be usable after launching another app, and
+        // leaving it in the foreground lets the next test's launch() terminate it cleanly.
+        app.activate()
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 15), "lbx should come back", file: file, line: line)
+        XCTAssertTrue(
+            element("tile.Google Search").waitForExistence(timeout: 10),
+            "The grid should be usable after returning",
+            file: file, line: line
+        )
     }
 
     private func type(_ text: String, into identifier: String) {
