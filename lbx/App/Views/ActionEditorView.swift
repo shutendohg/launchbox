@@ -54,6 +54,7 @@ struct ActionEditorView: View {
                         IconTile(symbol: iconSymbol, colorHex: colorHex, isGroup: !isAction, size: 52)
                         TextField("Name", text: $name)
                             .font(.title3)
+                            .accessibilityIdentifier("editor.name")
                             .submitLabel(.done)
                     }
                     .padding(.vertical, 4)
@@ -90,6 +91,7 @@ struct ActionEditorView: View {
                     Button("Save") { save() }
                         .fontWeight(.semibold)
                         .disabled(!canSave)
+                        .accessibilityIdentifier("editor.save")
                 }
             }
         }
@@ -104,6 +106,7 @@ struct ActionEditorView: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .lineLimit(2...6)
+                .accessibilityIdentifier("editor.template")
 
             Menu {
                 Button("Prompt: {{prompt:Label}}") { insert("{{prompt:Text}}") }
@@ -124,6 +127,7 @@ struct ActionEditorView: View {
             if let issue, !trimmedTemplate.isEmpty {
                 Label(issue.message, systemImage: "exclamationmark.circle.fill")
                     .foregroundStyle(.red)
+                    .accessibilityIdentifier("editor.issue")
             } else {
                 Text("Values are percent-encoded unless you add |raw, e.g. {{clipboard|raw}}.")
             }
@@ -146,6 +150,7 @@ struct ActionEditorView: View {
                     Label(group.name, systemImage: group.iconSymbol).tag(UUID?.some(group.id))
                 }
             }
+            .accessibilityIdentifier("editor.group")
         }
     }
 

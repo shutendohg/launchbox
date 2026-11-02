@@ -36,6 +36,7 @@ struct ItemGridView: View {
                 .rotationEffect(.degrees(item.sortIndex.isMultiple(of: 2) ? -1.2 : 1.2))
                 // Groups open so their contents can be edited too.
                 .onTapGesture { item.isGroup ? actions.tap(item) : actions.edit(item) }
+                .accessibilityIdentifier("tile.\(item.name)")
                 .draggable(item.id.uuidString) {
                     IconTile(symbol: item.iconSymbol, colorHex: item.colorHex, isGroup: item.isGroup)
                 }
@@ -52,6 +53,7 @@ struct ItemGridView: View {
                 TileView(item: item)
             }
             .buttonStyle(TileButtonStyle())
+            .accessibilityIdentifier("tile.\(item.name)")
             .contextMenu {
                 Button { actions.edit(item) } label: {
                     Label("Edit", systemImage: "pencil")

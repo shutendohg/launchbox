@@ -12,6 +12,7 @@ struct ToastView: View {
                         .foregroundStyle(.yellow)
                     Text(toast.message)
                         .font(.callout)
+                        .accessibilityIdentifier("toast.message")
                         .lineLimit(3)
                         .textSelection(.enabled)
                 }

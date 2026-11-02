@@ -79,7 +79,7 @@ struct HomeGridView: View {
         }
         .sensoryFeedback(.success, trigger: runner.launchCount)
         .sensoryFeedback(.selection, trigger: isEditing)
-        .task { SeedData.seedIfNeeded(context) }
+        .task { SeedData.seedIfNeeded(context, ignoreSeededFlag: LbxApp.isUITesting) }
     }
 
     // MARK: - Subviews
@@ -104,6 +104,7 @@ struct HomeGridView: View {
                     withAnimation(.snappy) { isEditing.toggle() }
                 }
                 .fontWeight(isEditing ? .semibold : .regular)
+                .accessibilityIdentifier("home.edit")
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
@@ -118,6 +119,7 @@ struct HomeGridView: View {
                 Image(systemName: "plus")
             }
             .accessibilityLabel("Add")
+            .accessibilityIdentifier("home.add")
         }
     }
 

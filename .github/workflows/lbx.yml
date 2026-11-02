@@ -40,13 +40,33 @@ jobs:
         run: brew install xcodegen
       - name: Generate project
         run: xcodegen generate
-      - name: Build app for iOS Simulator
+      - name: Pick an iPhone simulator
+        id: sim
         run: |
-          set -o pipefail
-          xcodebuild build \
+          xcrun simctl list devices available
+          udid=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          ios = sorted((k for k in devices if "iOS" in k), reverse=True)
+          print(next(d["udid"] for k in ios for d in devices[k] if d["name"].startswith("iPhone")))
+          ')
+          echo "udid=$udid" >> "$GITHUB_OUTPUT"
+      - name: Build and test on iOS Simulator (LbxCore + UI tests)
+        run: |
+          xcodebuild test \
             -project Lbx.xcodeproj \
             -scheme Lbx \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO \
-            | tee build.log | grep -E "error:|warning:|BUILD (SUCCEEDED|FAILED)" || true
-          grep -q "BUILD SUCCEEDED" build.log
+            > test.log 2>&1 || status=$?
+          grep -E "error:|warning: .*\.swift|Test Case .*(passed|failed)|Executed [0-9]+ tests|TEST (SUCCEEDED|FAILED)|BUILD (SUCCEEDED|FAILED)" test.log || true
+          exit ${status:-0}
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: |
+            lbx/TestResults.xcresult
+            lbx/test.log

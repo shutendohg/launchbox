@@ -22,6 +22,7 @@ struct PromptInputSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { provider.cancel() }
+                        .accessibilityIdentifier("prompt.cancel")
                 }
             }
         }
@@ -43,6 +44,7 @@ private struct PromptField: View {
             Section {
                 TextField(request.label, text: $text)
                     .focused($isFocused)
+                    .accessibilityIdentifier("prompt.field")
                     .submitLabel(isLast ? .go : .next)
                     .onSubmit { onSubmit(text) }
             } header: {
@@ -65,6 +67,7 @@ private struct PromptField: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(isLast ? "Open" : "Next") { onSubmit(text) }
                     .fontWeight(.semibold)
+                    .accessibilityIdentifier("prompt.submit")
             }
         }
         .onAppear { isFocused = true }

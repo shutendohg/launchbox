@@ -8,8 +8,14 @@ import SwiftData
 enum SeedData {
     private static let seededKey = "didSeedSampleItems"
 
-    static func seedIfNeeded(_ context: ModelContext, defaults: UserDefaults = .standard) {
-        guard !defaults.bool(forKey: seededKey) else { return }
+    /// - Parameter ignoreSeededFlag: Seed an empty store even if seeding happened
+    ///   before (used with the in-memory store of UI tests).
+    static func seedIfNeeded(
+        _ context: ModelContext,
+        defaults: UserDefaults = .standard,
+        ignoreSeededFlag: Bool = false
+    ) {
+        guard ignoreSeededFlag || !defaults.bool(forKey: seededKey) else { return }
         defer { defaults.set(true, forKey: seededKey) }
 
         let existing = (try? context.fetchCount(FetchDescriptor<LaunchItem>())) ?? 0
