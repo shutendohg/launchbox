@@ -1,7 +1,7 @@
 import Foundation
 
 /// An sRGB color parsed from a `#RRGGBB` string. UI-independent so it can be
-/// validated and tested in LbxCore; the app maps it to SwiftUI `Color`.
+/// validated and tested in LaunchboxCore; the app maps it to SwiftUI `Color`.
 public struct HexColor: Hashable, Sendable {
     public var red: Double
     public var green: Double

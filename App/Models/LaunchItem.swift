@@ -1,5 +1,5 @@
 import Foundation
-import LbxCore
+import LaunchboxCore
 import SwiftData
 
 /// A cell in the launcher grid: either an action (URL template) or a group.

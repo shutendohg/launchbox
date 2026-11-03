@@ -2,7 +2,7 @@ import XCTest
 
 /// End-to-end checks for the manual test checklist in README.md, run against
 /// a fresh in-memory store seeded with the sample actions.
-final class LbxUITests: XCTestCase {
+final class LaunchboxUITests: XCTestCase {
 
     private var app: XCUIApplication!
 
@@ -51,10 +51,10 @@ final class LbxUITests: XCTestCase {
         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         XCTAssertTrue(safari.wait(for: .runningForeground, timeout: 30), "Safari should open", file: file, line: line)
 
-        // Come back to lbx: it must still be usable after launching another app, and
+        // Come back to Launchbox: it must still be usable after launching another app, and
         // leaving it in the foreground lets the next test's launch() terminate it cleanly.
         app.activate()
-        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 15), "lbx should come back", file: file, line: line)
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 15), "Launchbox should come back", file: file, line: line)
         XCTAssertTrue(
             button("tile.Google Search").waitForExistence(timeout: 10),
             "The grid should be usable after returning",

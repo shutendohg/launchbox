@@ -1,5 +1,5 @@
 import Foundation
-import LbxCore
+import LaunchboxCore
 import SwiftData
 
 /// Mutations on the launcher tree that need to keep `sortIndex` consistent.

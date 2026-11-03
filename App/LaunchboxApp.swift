@@ -2,7 +2,7 @@ import SwiftData
 import SwiftUI
 
 @main
-struct LbxApp: App {
+struct LaunchboxApp: App {
     /// Set by UI tests: use a throwaway in-memory store and always seed it.
     static let isUITesting = ProcessInfo.processInfo.arguments.contains("-ui-testing")
 

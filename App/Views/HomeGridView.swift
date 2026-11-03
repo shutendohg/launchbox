@@ -1,4 +1,4 @@
-import LbxCore
+import LaunchboxCore
 import SwiftData
 import SwiftUI
 
@@ -39,7 +39,7 @@ struct HomeGridView: View {
                         .padding()
                 }
             }
-            .navigationTitle("Lbx")
+            .navigationTitle("Launchbox")
             .toolbar { toolbar }
         }
         .overlay {
@@ -79,7 +79,7 @@ struct HomeGridView: View {
         }
         .sensoryFeedback(.success, trigger: runner.launchCount)
         .sensoryFeedback(.selection, trigger: isEditing)
-        .task { SeedData.seedIfNeeded(context, ignoreSeededFlag: LbxApp.isUITesting) }
+        .task { SeedData.seedIfNeeded(context, ignoreSeededFlag: LaunchboxApp.isUITesting) }
     }
 
     // MARK: - Subviews

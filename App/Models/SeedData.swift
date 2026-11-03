@@ -1,5 +1,5 @@
 import Foundation
-import LbxCore
+import LaunchboxCore
 import SwiftData
 
 /// Populates the grid with sample actions on first launch only, so deleting

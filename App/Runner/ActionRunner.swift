@@ -1,5 +1,5 @@
 import Foundation
-import LbxCore
+import LaunchboxCore
 import Observation
 import UIKit
 

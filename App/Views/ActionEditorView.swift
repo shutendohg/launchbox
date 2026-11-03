@@ -1,4 +1,4 @@
-import LbxCore
+import LaunchboxCore
 import SwiftData
 import SwiftUI
 

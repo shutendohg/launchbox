@@ -1,5 +1,5 @@
 import Foundation
-import LbxCore
+import LaunchboxCore
 import Observation
 
 /// Bridges `PromptProviding` to SwiftUI. A run with prompts opens one

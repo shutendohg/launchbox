@@ -1,11 +1,11 @@
-# lbx
+# Launchbox
 
 A personal iOS launcher in the spirit of Launch Center Pro: a grid of tiles that
 open URL schemes, with variables (text prompts, clipboard, date) filled in at
 run time.
 
 - SwiftUI + SwiftData, iOS 17+
-- Pure logic lives in the `LbxCore` Swift package and is unit tested
+- Pure logic lives in the `LaunchboxCore` Swift package and is unit tested
 - The Xcode project is generated with XcodeGen from `project.yml`
 
 ## Features (MVP)
@@ -28,7 +28,7 @@ brew install xcodegen
 ```
 
 ```bash
-xcodegen generate && open Lbx.xcodeproj
+xcodegen generate && open Launchbox.xcodeproj
 ```
 
 To run on a device, select your team under *Signing & Capabilities* (a free
@@ -38,13 +38,13 @@ Developer Mode on the device.
 ### Tests
 
 ```bash
-cd LbxCore && swift test
+cd LaunchboxCore && swift test
 ```
 
-The `Lbx` scheme in Xcode (`⌘U`) runs these plus the UI tests in `UITests/`,
+The `Launchbox` scheme in Xcode (`⌘U`) runs these plus the UI tests in `UITests/`,
 which walk through most of the manual checklist below on a simulator (the app
 is launched with `-ui-testing`, which uses a throwaway in-memory store). CI
-(`.github/workflows/ci.yml`) runs the LbxCore tests on Linux and macOS and the
+(`.github/workflows/ci.yml`) runs the LaunchboxCore tests on Linux and macOS and the
 full scheme on an iPhone simulator.
 
 ## URL templates
@@ -83,7 +83,7 @@ Many apps don't publish a URL scheme. You can still launch them via Shortcuts:
 
 1. In the Shortcuts app, create a shortcut with the **Open App** action and
    pick the app. Give the shortcut a name, e.g. `Open Notes`.
-2. In lbx, add an action with the **Run Shortcut** preset and replace the
+2. In Launchbox, add an action with the **Run Shortcut** preset and replace the
    prompt with the name: `shortcuts://run-shortcut?name=Open%20Notes`.
 
 Shortcuts briefly appears before switching to the target app.
@@ -92,7 +92,7 @@ Shortcuts briefly appears before switching to the target app.
 
 - **No app discovery.** iOS has no API to list installed apps or their schemes.
   You need to know (or look up) the scheme; presets only save typing.
-- **No pre-check.** lbx never calls `canOpenURL` (it requires declaring every
+- **No pre-check.** Launchbox never calls `canOpenURL` (it requires declaring every
   scheme in `LSApplicationQueriesSchemes`, capped at 50). It just tries to open
   the URL and shows “Couldn't open: …” if nothing handles it.
 - **Universal Links** (`https://` URLs claimed by apps) may open in Safari
@@ -101,12 +101,12 @@ Shortcuts briefly appears before switching to the target app.
 - **No escape syntax.** A literal `{{` cannot be written in a template.
 - Launching always brings the target app to the foreground.
 - Not yet included: widgets, Siri/App Intents, time/location/NFC triggers,
-  import/export, an `lbx://` URL scheme, and iCloud sync.
+  import/export, a `launchbox://` URL scheme, and iCloud sync.
 
 ## Manual test checklist (Simulator)
 
 Items marked *(UI test)* are automated in `UITests/`; percent-encoding is
-covered by the LbxCore unit tests.
+covered by the LaunchboxCore unit tests.
 
 1. `https://example.com` → Safari opens. *(UI test)*
 2. `sms:` → Messages compose opens.
@@ -123,15 +123,15 @@ On a device, also try real app schemes such as `youtube://`.
 
 ```
 .
-├── project.yml            XcodeGen definition (app + LbxCore + tests)
-├── LbxCore/               UI-independent logic (SwiftPM, unit tested)
-│   └── Sources/LbxCore/
+├── project.yml            XcodeGen definition (app + LaunchboxCore + tests)
+├── LaunchboxCore/         UI-independent logic (SwiftPM, unit tested)
+│   └── Sources/LaunchboxCore/
 │       ├── Template/      TemplateToken, TemplateParser, TemplateResolver, TemplateLinter
 │       ├── LaunchURLBuilder.swift
 │       ├── ActionPreset.swift, HexColor.swift, Reordering.swift
 ├── UITests/               XCUITest end-to-end checks
 └── App/
-    ├── LbxApp.swift
+    ├── LaunchboxApp.swift
     ├── Models/            LaunchItem (SwiftData), LaunchItemStore, SeedData
     ├── Runner/            ActionRunner, UIPromptProvider
     └── Views/             Home grid, group overlay, editor, pickers, prompt sheet, toast

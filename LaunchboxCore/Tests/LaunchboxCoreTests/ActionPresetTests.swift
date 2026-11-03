@@ -1,5 +1,5 @@
 import XCTest
-@testable import LbxCore
+@testable import LaunchboxCore
 
 private struct FixedAnswerProvider: PromptProviding {
     func prompt(label: String) async -> String? { "test value" }

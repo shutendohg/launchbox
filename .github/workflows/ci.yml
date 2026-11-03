@@ -14,7 +14,7 @@ jobs:
     container: swift:6.0-noble
     defaults:
       run:
-        working-directory: LbxCore
+        working-directory: LaunchboxCore
     steps:
       - uses: actions/checkout@v4
       - run: swift test
@@ -28,8 +28,8 @@ jobs:
         run: |
           xcodebuild -version
           swift --version
-      - name: LbxCore tests (macOS)
-        working-directory: LbxCore
+      - name: LaunchboxCore tests (macOS)
+        working-directory: LaunchboxCore
         run: swift test
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -46,15 +46,15 @@ jobs:
           print(next(d["udid"] for k in ios for d in devices[k] if d["name"].startswith("iPhone")))
           ')
           echo "udid=$udid" >> "$GITHUB_OUTPUT"
-      - name: Build and test on iOS Simulator (LbxCore + UI tests)
+      - name: Build and test on iOS Simulator (LaunchboxCore + UI tests)
         timeout-minutes: 40
         run: |
           set -o pipefail
           # Simulator UI tests occasionally fail for infrastructure reasons
           # (e.g. "Failed to terminate"); retry failed tests up to 3 times.
           xcodebuild test \
-            -project Lbx.xcodeproj \
-            -scheme Lbx \
+            -project Launchbox.xcodeproj \
+            -scheme Launchbox \
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -resultBundlePath TestResults.xcresult \
             -retry-tests-on-failure \

@@ -1,5 +1,5 @@
 import XCTest
-@testable import LbxCore
+@testable import LaunchboxCore
 
 final class TemplateParserTests: XCTestCase {
 

@@ -1,5 +1,5 @@
 import XCTest
-@testable import LbxCore
+@testable import LaunchboxCore
 
 /// Returns queued answers in order; `nil` in the queue simulates a cancel.
 private actor StubPromptProvider: PromptProviding {

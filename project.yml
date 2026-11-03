@@ -1,4 +1,4 @@
-name: Lbx
+name: Launchbox
 options:
   bundleIdPrefix: com.shutendohg
   deploymentTarget:
@@ -10,20 +10,20 @@ settings:
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
 packages:
-  LbxCore:
-    path: LbxCore
+  LaunchboxCore:
+    path: LaunchboxCore
 targets:
-  Lbx:
+  Launchbox:
     type: application
     platform: iOS
     sources:
       - path: App
     dependencies:
-      - package: LbxCore
+      - package: LaunchboxCore
     info:
       path: App/Info.plist
       properties:
-        CFBundleDisplayName: Lbx
+        CFBundleDisplayName: Launchbox
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
@@ -38,31 +38,31 @@ targets:
           - UIInterfaceOrientationLandscapeRight
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.shutendohg.lbx
+        PRODUCT_BUNDLE_IDENTIFIER: com.shutendohg.launchbox
         TARGETED_DEVICE_FAMILY: "1,2"
         CODE_SIGN_STYLE: Automatic
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-  LbxUITests:
+  LaunchboxUITests:
     type: bundle.ui-testing
     platform: iOS
     sources:
       - path: UITests
     dependencies:
-      - target: Lbx
+      - target: Launchbox
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.shutendohg.lbx.uitests
+        PRODUCT_BUNDLE_IDENTIFIER: com.shutendohg.launchbox.uitests
         GENERATE_INFOPLIST_FILE: YES
         TARGETED_DEVICE_FAMILY: "1,2"
         # XCUITest APIs are main-thread bound; keep the test target in Swift 5 mode.
         SWIFT_VERSION: "5.0"
 schemes:
-  Lbx:
+  Launchbox:
     build:
       targets:
-        Lbx: all
+        Launchbox: all
     test:
       targets:
-        - package: LbxCore/LbxCoreTests
-        - LbxUITests
+        - package: LaunchboxCore/LaunchboxCoreTests
+        - LaunchboxUITests

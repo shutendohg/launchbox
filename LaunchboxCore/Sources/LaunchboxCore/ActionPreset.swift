@@ -1,7 +1,7 @@
 import Foundation
 
 /// A ready-made action template the editor can insert. Presets only reduce
-/// typing; lbx cannot discover which schemes installed apps support.
+/// typing; Launchbox cannot discover which schemes installed apps support.
 public struct ActionPreset: Identifiable, Hashable, Sendable {
     public let id: String
     public let name: String

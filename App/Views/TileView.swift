@@ -1,4 +1,4 @@
-import LbxCore
+import LaunchboxCore
 import SwiftUI
 
 extension Color {
